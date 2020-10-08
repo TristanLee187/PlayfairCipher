@@ -13,6 +13,7 @@ class Playfair():
         for i in range(0, 25, 5):
             self.val.append(args[3][i:i + 5])
 
+    #returns the ordered pair of the character in the array
     def indexOf(self,char):
         index=[]
         for i in range(5):
@@ -21,6 +22,7 @@ class Playfair():
                 index.append(self.val[i].index(char))
                 return index
 
+    #fix the plaintext to: add X in between double letters, add Z to the end of the text if odd length
     def fix(self):
         ans=''
         window=[]
