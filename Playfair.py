@@ -27,7 +27,7 @@ class Playfair():
     def solve(self):
         if self.mode=='encode':
             self.fix()
-            self.encode()
+            self.solveAll()
 
     # if encoding, fix the plaintext to: add X in between double letters, add Z to the end of the text if odd length
     def fix(self):
@@ -54,21 +54,45 @@ class Playfair():
             ans += 'Z'
         self.text = ans
 
+    #solve a single pair if they are in the same row
+    def solveHorizontal(self,coors1,coors2):
+        x = coors1[0]
+        ans=''
+        if self.mode=='encode':
+            #use the row below
+            ans += self.val[(x + 1) % 5][coors1[1]]
+            ans += self.val[(x + 1) % 5][coors2[1]]
+        else:
+            #use the row above
+            ans += self.val[(x - 1) % 5][coors1[1]]
+            ans += self.val[(x - 1) % 5][coors2[1]]
+        return ans
+
+    #solve a single pair if they are in the same column
+    def solveVertical(self,coors1,coors2):
+        y = coors1[1]
+        ans=''
+        if self.mode=='encode':
+            #use column to the right
+            ans += self.val[coors1[0]][(y + 1) % 5]
+            ans += self.val[coors2[0]][(y + 1) % 5]
+        else:
+            #use column to the left
+            ans += self.val[coors1[0]][(y - 1) % 5]
+            ans += self.val[coors2[0]][(y - 1) % 5]
+        return ans
+
     #encode a single pair of letters
-    def encodeOne(self,pair):
+    def solveOne(self,pair):
         coors1=self.indexOf(pair[0])
         coors2=self.indexOf(pair[1])
         ans=''
-        #same row -> use row below
+        #same row -> use solveHorizontal
         if coors1[0]==coors2[0]:
-            x=coors1[0]
-            ans+=self.val[(x+1)%5][coors1[1]]
-            ans+=self.val[(x+1)%5][coors2[1]]
-        #same column -> use column to the right
+            ans+=self.solveHorizontal(coors1,coors2)
+        #same column -> use solveVertical
         elif coors1[1]==coors2[1]:
-            y=coors1[1]
-            ans+=self.val[coors1[0]][(y+1)%5]
-            ans+=self.val[coors2[0]][(y+1)%5]
+            ans+=self.solveVertical(coors1,coors2)
         #different column and row -> use the same row, column of the other letter
         else:
             ans+=self.val[coors1[0]][coors2[1]]
@@ -76,13 +100,13 @@ class Playfair():
         return ans
 
     #iterate over all pairs, encoding each of them
-    def encode(self):
+    def solveAll(self):
         for i in range(0,len(self.text),2):
-            self.ans+=self.encodeOne(self.text[i:i+2])
+            self.ans+=self.solveOne(self.text[i:i+2])
 
     def print(self):
-        print(self.text)
-        print(self.ans)
+        print('You entered: ' + self.text)
+        print('The result: ' + self.ans)
 
 p=Playfair(sys.argv)
 p.fix()
