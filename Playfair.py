@@ -12,6 +12,8 @@ class Playfair():
         self.val = []
         for i in range(0, 25, 5):
             self.val.append(args[3][i:i + 5])
+
+        #Initialize the result of decryption or encryption
         self.ans=''
 
     #returns the ordered pair of the character in the array
@@ -26,18 +28,18 @@ class Playfair():
 
     def solve(self):
         if self.mode=='encode':
-            self.fix()
+            self.encodeFix()
             self.solveAll()
 
     # if encoding, fix the plaintext to: add X in between double letters, add Z to the end of the text if odd length
-    def fix(self):
+    def encodeFix(self):
         ans = ''
         # store two characters at a time
         window = []
         for char in self.text:
             # add character to the window if it needs more
             if len(window) < 2:
-                window += char
+                window.append('I' if char=='J' else char)
             if len(window) == 2:
                 # fix duplicate letter problem
                 if window[0] == window[1]:
@@ -108,7 +110,7 @@ class Playfair():
         print('You entered: ' + self.text)
         print('The result: ' + self.ans)
 
+
 p=Playfair(sys.argv)
-p.fix()
 p.solve()
 p.print()
