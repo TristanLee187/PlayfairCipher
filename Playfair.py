@@ -16,17 +16,10 @@ class Playfair():
         #Initialize the result of decryption or encryption
         self.ans=''
 
-    #Returns the ordered pair representing the position of the character in the array
-    def indexOf(self,char):
-        index=[]
-        for i in range(5):
-            if char in self.val[i]:
-                index.append(i)
-                index.append(self.val[i].index(char))
-                return index
-
     #Set the answer depending on the mode. Print the answer with messages. Also detect for extra Xs
     def solve(self):
+        print('You entered: \n' + self.text)
+        self.fix()
         if self.mode=='encode':
             self.encodeFix()
             self.solveAll()
@@ -35,6 +28,15 @@ class Playfair():
             self.solveAll()
             self.print()
             self.xDetect()
+
+
+    #general fixing: make the text all capital letters and remove punctuation
+    def fix(self):
+        text=''
+        for char in self.text:
+            if char.isalpha():
+                text+=char.upper()
+        self.text=text
 
     #If encoding, fix the plaintext to: add X in between double letters, add Z to the end of the text if odd length
     def encodeFix(self):
@@ -56,10 +58,19 @@ class Playfair():
                     ans += ''.join(window)
                     window.clear()
         ans += ''.join(window)
-        # add Z if odd length
+        # if odd length, add Z if the last letter isn't a Z,
         if len(ans) % 2 == 1:
-            ans += 'Z'
+            ans += 'Z' if ans[-1] != 'Z' else 'X'
         self.text = ans
+
+    # Returns the ordered pair representing the position of the character in the array
+    def indexOf(self, char):
+        index = []
+        for i in range(5):
+            if char in self.val[i]:
+                index.append(i)
+                index.append(self.val[i].index(char))
+                return index
 
     #Solve a single pair if they are in the same row
     def solveHorizontal(self,coors1,coors2):
@@ -128,13 +139,12 @@ class Playfair():
             else:
                 ans+=self.ans[i]
         self.ans=ans
-        print('Possible extra Xs were detected in the result. A possible alternate message is: ' + self.ans)
+        print('Possible extra Xs were detected in the result. A possible alternate message is: \n' + self.ans)
         return True
 
     #Print the result of the encryption or straightforward decryption (no removal of extra Xs or Zs)
     def print(self):
-        print('You entered: ' + self.text)
-        print('The ' + self.mode + 'd ' + 'result: ' + self.ans)
+        print('The ' + self.mode + 'd ' + 'result: \n' + self.ans)
 
 
 p=Playfair(sys.argv)
