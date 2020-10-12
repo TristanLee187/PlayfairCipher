@@ -16,7 +16,7 @@ class Playfair():
         #Initialize the result of decryption or encryption
         self.ans=''
 
-    #returns the ordered pair of the character in the array
+    #Returns the ordered pair representing the position of the character in the array
     def indexOf(self,char):
         index=[]
         for i in range(5):
@@ -25,13 +25,18 @@ class Playfair():
                 index.append(self.val[i].index(char))
                 return index
 
-
+    #Set the answer depending on the mode. Print the answer with messages. Also detect for extra Xs
     def solve(self):
         if self.mode=='encode':
             self.encodeFix()
             self.solveAll()
+            self.print()
+        else:
+            self.solveAll()
+            self.print()
+            self.xDetect()
 
-    # if encoding, fix the plaintext to: add X in between double letters, add Z to the end of the text if odd length
+    #If encoding, fix the plaintext to: add X in between double letters, add Z to the end of the text if odd length
     def encodeFix(self):
         ans = ''
         # store two characters at a time
@@ -56,7 +61,7 @@ class Playfair():
             ans += 'Z'
         self.text = ans
 
-    #solve a single pair if they are in the same row
+    #Solve a single pair if they are in the same row
     def solveHorizontal(self,coors1,coors2):
         x = coors1[0]
         ans=''
@@ -70,7 +75,7 @@ class Playfair():
             ans += self.val[(x - 1) % 5][coors2[1]]
         return ans
 
-    #solve a single pair if they are in the same column
+    #Solve a single pair if they are in the same column
     def solveVertical(self,coors1,coors2):
         y = coors1[1]
         ans=''
@@ -84,7 +89,7 @@ class Playfair():
             ans += self.val[coors2[0]][(y - 1) % 5]
         return ans
 
-    #encode a single pair of letters
+    #Encode or decode a single pair of letters
     def solveOne(self,pair):
         coors1=self.indexOf(pair[0])
         coors2=self.indexOf(pair[1])
@@ -101,16 +106,36 @@ class Playfair():
             ans+=self.val[coors2[0]][coors1[1]]
         return ans
 
-    #iterate over all pairs, encoding each of them
+    #Iterate over all pairs, encoding or decoding each of them
     def solveAll(self):
         for i in range(0,len(self.text),2):
             self.ans+=self.solveOne(self.text[i:i+2])
 
+    #detect extra Xs (Xs between duplicate letters) if in decoding mode.
+    #Removes all of the Xs and returns True if they exist, otherwise return False
+    #Prints a corresponding message
+    def xDetect(self):
+        if 'X' in self.ans and self.mode == 'decode':
+            pass
+        else:
+            return False
+        ans=''
+        for i in range(len(self.ans)):
+            #if current character is an x and characters on either side are the same, don't put the X in the answer
+            if 0<i<len(self.ans) and self.ans[i]=='X' and self.ans[i-1]==self.ans[i+1]:
+                pass
+            #otherwise, put it in the answer
+            else:
+                ans+=self.ans[i]
+        self.ans=ans
+        print('Possible extra Xs were detected in the result. A possible alternate message is: ' + self.ans)
+        return True
+
+    #Print the result of the encryption or straightforward decryption (no removal of extra Xs or Zs)
     def print(self):
         print('You entered: ' + self.text)
-        print('The result: ' + self.ans)
+        print('The ' + self.mode + 'd ' + 'result: ' + self.ans)
 
 
 p=Playfair(sys.argv)
 p.solve()
-p.print()
