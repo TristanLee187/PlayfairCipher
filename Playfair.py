@@ -114,3 +114,5 @@ class Playfair():
 p=Playfair(sys.argv)
 p.solve()
 p.print()
+
+#Testing submodule
