@@ -149,3 +149,5 @@ class Playfair():
 
 p=Playfair(sys.argv)
 p.solve()
+
+#TEST TEST Test
